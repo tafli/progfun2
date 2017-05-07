@@ -1,7 +1,5 @@
 package streams
 
-import common._
-
 /**
  * This trait represents the layout and building blocks of the game
  */
@@ -66,7 +64,6 @@ trait GameDef {
    */
   val terrain: Terrain
 
-
   /**
    * In Bloxorz, we can move left, right, Up or down.
    * These moves are encoded as case objects.
@@ -81,8 +78,7 @@ trait GameDef {
    * This function returns the block at the start position of
    * the game.
    */
-  def startBlock: Block = ???
-
+  def startBlock: Block = Block(startPos, startPos)
 
   /**
    * A block is represented by the position of the two cubes that
@@ -90,7 +86,6 @@ trait GameDef {
    * smaller than `b2`.
    */
   case class Block(b1: Pos, b2: Pos) {
-
     // checks the requirement mentioned above
     require(b1.row <= b2.row && b1.col <= b2.col, "Invalid block position: b1=" + b1 + ", b2=" + b2)
 
@@ -108,46 +103,45 @@ trait GameDef {
 
 
     /** The block obtained by moving left */
-    def left = if (isStanding)             deltaCol(-2, -1)
+    def left: Block = if (isStanding)      deltaCol(-2, -1)
                else if (b1.row == b2.row)  deltaCol(-1, -2)
                else                        deltaCol(-1, -1)
 
     /** The block obtained by moving right */
-    def right = if (isStanding)            deltaCol(1, 2)
+    def right: Block = if (isStanding)     deltaCol(1, 2)
                 else if (b1.row == b2.row) deltaCol(2, 1)
                 else                       deltaCol(1, 1)
 
     /** The block obtained by moving up */
-    def up = if (isStanding)               deltaRow(-2, -1)
+    def up: Block = if (isStanding)        deltaRow(-2, -1)
              else if (b1.row == b2.row)    deltaRow(-1, -1)
              else                          deltaRow(-1, -2)
 
     /** The block obtained by moving down */
-    def down = if (isStanding)             deltaRow(1, 2)
+    def down: Block = if (isStanding)      deltaRow(1, 2)
                else if (b1.row == b2.row)  deltaRow(1, 1)
                else                        deltaRow(2, 1)
-
 
     /**
      * Returns the list of blocks that can be obtained by moving
      * the current block, together with the corresponding move.
      */
-    def neighbors: List[(Block, Move)] = ???
+    def neighbors: List[(Block, Move)] = List((left, Left), (right , Right) , (up, Up) , (down, Down))
 
     /**
      * Returns the list of positions reachable from the current block
      * which are inside the terrain.
      */
-    def legalNeighbors: List[(Block, Move)] = ???
+    def legalNeighbors: List[(Block, Move)] = neighbors.filter(_._1.isLegal)
 
     /**
      * Returns `true` if the block is standing.
      */
-    def isStanding: Boolean = ???
+    def isStanding: Boolean = b1 == b2
 
     /**
      * Returns `true` if the block is entirely inside the terrain.
      */
-    def isLegal: Boolean = ???
+    def isLegal: Boolean = terrain(b1) && terrain(b2)
   }
 }
