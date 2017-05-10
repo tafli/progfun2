@@ -28,7 +28,7 @@ class BloxorzSuite extends FunSuite {
   trait Level1 extends SolutionChecker {
       /* terrain for level 1*/
 
-    val level =
+    val level: String =
     """ooo-------
       |oSoooo----
       |ooooooooo-
@@ -61,13 +61,11 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
-
 	test("optimal solution for level 1") {
     new Level1 {
       assert(solve(solution) == Block(goal, goal))
     }
   }
-
 
 	test("optimal solution length for level 1") {
     new Level1 {
@@ -95,6 +93,19 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
+  test("done") {
+    new Level1 {
+      assert(done(Block(Pos(4,7), Pos(4,7))))
+    }
+  }
+
+  test("not done") {
+    new Level1 {
+      assert(!done(Block(Pos(4,6), Pos(4,7))))
+      assert(!done(Block(Pos(3,7), Pos(3,7))))
+    }
+  }
+
   test("neighborsWithHistory") {
     new Level1 {
       assert(
@@ -116,11 +127,8 @@ class BloxorzSuite extends FunSuite {
           ).toStream,
           Set(Block(Pos(1,2),Pos(1,3)), Block(Pos(1,1),Pos(1,1)))
         ) ===
-          Set(
-            (Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))
-          ).toStream
+          Set((Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))).toStream
       )
     }
   }
-
 }
